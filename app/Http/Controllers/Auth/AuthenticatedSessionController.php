@@ -29,9 +29,15 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         if ($request->wantsJson() || $request->is('api/*')) {
+            $user = $request->user();
+            $token = $user->createToken('auth_token')->plainTextToken;
+
             return response()->json([
                 'message' => 'Logged in successfully',
-                'user' => $request->user(),
+                'data' => [
+                    'user' => $user,
+                    'token' => $token,
+                ],
             ]);
         }
 

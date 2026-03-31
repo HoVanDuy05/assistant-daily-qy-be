@@ -6,6 +6,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use Illuminate\Http\Request;
 
 /*
@@ -15,8 +17,19 @@ use Illuminate\Http\Request;
 */
 
 // Auth
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-Route::post('/register', [RegisteredUserController::class, 'store']);
+Route::prefix('auth')->group(function () {
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('/register', [RegisteredUserController::class, 'store']);
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store']);
+    Route::post('/reset-password', [NewPasswordController::class, 'store']);
+});
+
+// Testing Real-time
+Route::get('/test-broadcast', function (Request $request) {
+    $msg = $request->query('message', 'Đây là thông báo Real-time từ Reverb!');
+    event(new \App\Events\SystemMessageEvent($msg));
+    return response()->json(['status' => 'Broadcasted!', 'message' => $msg]);
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Chat
     Route::post('/chat', ChatController::class);
-    Route::get('/chat/stream', [ChatController::class, 'stream']); // SSE usually uses GET for simplicity in PHP
+    Route::get('/chat/stream', [ChatController::class, 'stream']);
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('api.profile.edit');
