@@ -40,6 +40,9 @@ Route::get('/test-broadcast', function (Request $request) {
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Auth Info
+    Route::get('/auth/me', [AuthenticatedSessionController::class, 'me']);
+
     // User Info
     Route::get('/user', function (Request $request) {
         return $request->user();

@@ -47,6 +47,17 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
+     * Get the authenticated user.
+     */
+    public function me(Request $request): \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $request->user(),
+        ]);
+    }
+
+    /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
