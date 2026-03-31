@@ -42,6 +42,12 @@ Route::get('/test-broadcast', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     // Auth Info
     Route::get('/auth/me', [AuthenticatedSessionController::class, 'me']);
+    
+    // AI Test
+    Route::get('/test-ai', function() {
+        $client = Gemini::client(config('services.gemini.key'));
+        return response()->json($client->models()->list());
+    });
 
     // User Info
     Route::get('/user', function (Request $request) {
