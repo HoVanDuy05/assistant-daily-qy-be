@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\CommandController;
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -46,6 +48,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Chat
     Route::post('/chat', ChatController::class);
     Route::get('/chat/stream', [ChatController::class, 'stream']);
+
+    // Commands
+    Route::post('/commands/execute', [CommandController::class, 'execute']);
+    Route::get('/commands/history', [CommandController::class, 'history']);
+
+    // Reminders
+    Route::get('/reminders', [CommandController::class, 'getReminders']);
+    Route::delete('/reminders/{id}', [CommandController::class, 'deleteReminder']);
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('api.profile.edit');
