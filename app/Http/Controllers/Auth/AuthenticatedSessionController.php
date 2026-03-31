@@ -26,7 +26,9 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        if (!$request->wantsJson() && !$request->is('api/*')) {
+            $request->session()->regenerate();
+        }
 
         if ($request->wantsJson() || $request->is('api/*')) {
             $user = $request->user();
@@ -51,9 +53,10 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        if (!$request->wantsJson() && !$request->is('api/*')) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         if ($request->wantsJson() || $request->is('api/*')) {
             return response()->json(['message' => 'Logged out successfully']);

@@ -44,7 +44,9 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        if (!$request->wantsJson() && !$request->is('api/*')) {
+            Auth::login($user);
+        }
 
         if ($request->wantsJson() || $request->is('api/*')) {
             $token = $user->createToken('auth_token')->plainTextToken;
