@@ -78,7 +78,7 @@ class CommandController extends Controller
         
         Câu lệnh người dùng: \"$input\"";
 
-        $response = $client->geminiPro()->generateContent($prompt);
+        $response = $client->generativeModel('gemini-1.5-flash')->generateContent($prompt);
         $text = $response->text();
         
         // Clean markdown backticks if any
