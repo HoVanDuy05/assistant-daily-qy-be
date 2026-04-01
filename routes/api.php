@@ -39,22 +39,15 @@ Route::get('/test-broadcast', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 
-// AI Test Public
-Route::get('/test-ai', function() {
-    try {
-        $client = Gemini::client(config('services.gemini.key'));
-        return response()->json($client->models()->list());
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'key_check' => substr(config('services.gemini.key'), 0, 5) . '...' . substr(config('services.gemini.key'), -5)
-        ], 500);
-    }
-});
-
 Route::middleware('auth:sanctum')->group(function () {
     // Auth Info
     Route::get('/auth/me', [AuthenticatedSessionController::class, 'me']);
+
+    // AI Test
+    Route::get('/test-ai', function () {
+        $client = Gemini::client(config('services.gemini.key'));
+        return response()->json($client->models()->list());
+    });
 
     // User Info
     Route::get('/user', function (Request $request) {
@@ -77,7 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('api.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('api.profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('api.profile.destroy');
-    
+
     // Auth
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
     Route::put('/password', [PasswordController::class, 'update'])->name('api.password.update');
